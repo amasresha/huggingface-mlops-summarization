@@ -1,5 +1,7 @@
 ### **`README.md`**
 
+[![Sync to Hugging Face Hub](https://github.com/amasresha/huggingface-mlops-summarization/actions/workflows/main.yaml/badge.svg)](https://github.com/amasresha/huggingface-mlops-summarization/actions/workflows/main.yaml)
+
 ```markdown
 # Hugging Face MLOps Text Summarization
 
