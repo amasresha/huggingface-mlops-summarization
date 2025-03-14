@@ -7,7 +7,7 @@ on:
   workflow_dispatch:  # Allows manual triggering from the Actions tab
 
 jobs:
-  sync-to-hub:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -15,15 +15,62 @@ jobs:
         with:
           fetch-depth: 0  # Fetches the entire commit history
 
-      - name: Add remote
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}  # Hugging Face token from GitHub Secrets
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.12"  # Use the Python version required by your app
+
+      - name: Install dependencies
         run: |
-          git remote add space https://${{ secrets.HF_USERNAME }}:$HF_TOKEN@huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACE_NAME }}
+          python -m pip install --upgrade pip
+          pip install gradio transformers pytest
+
+      - name: Run tests
+        run: |
+          pytest tests/
+
+  sync-to-hub:
+    runs-on: ubuntu-latest
+    needs: test  # Ensure the sync job runs only if tests pass
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Fetches the entire commit history
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.12"  # Use the Python version required by your app
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install gradio transformers
+
+      - name: Clone Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}  # Hugging Face token
+          HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}  # Hugging Face Space name
+        run: |
+          git clone https://$HF_TOKEN@huggingface.co/spaces/$HF_SPACE_NAME huggingface-space
+          cd huggingface-space
+
+      - name: Copy application files
+        run: |
+          cp ../app.py .  # Copy app.py from the GitHub repo to the Hugging Face Space repo
+          cp ../requirements.txt .  # Copy requirements.txt if needed
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Update application files from GitHub"
 
       - name: Push to Hugging Face Hub
         env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}  # Hugging Face token from GitHub Secrets
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}  # Hugging Face token
+          HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}  # Hugging Face Space name
         run: |
-          git fetch space
-          git push --force space HEAD:main
+          git push https://$HF_TOKEN@huggingface.co/spaces/$HF_SPACE_NAME.git main
