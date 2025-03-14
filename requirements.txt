@@ -1,7 +1,5 @@
 gradio
 transformers
-tensorflow
-tf-keras
 pytest
 pytest-cov
 numpy
