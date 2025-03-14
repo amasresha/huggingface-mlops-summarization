@@ -45,6 +45,10 @@ This project demonstrates an MLOps pipeline for text summarization using Hugging
 ---
 
 ## **Usage**
+### Test
+   ```bash
+       make test
+   ```
 
 ### **Running Locally**
 1. Start the Gradio app:
