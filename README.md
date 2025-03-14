@@ -1,7 +1,7 @@
 ### **`README.md`**
 
 ```markdown
-# Hugging Face MLOps Summarization
+# Hugging Face MLOps Text Summarization
 
 This project demonstrates an MLOps pipeline for text summarization using Hugging Face Transformers, Gradio, and GitHub Actions. The application allows users to input text and receive a summarized version using a pre-trained Hugging Face model. The pipeline is automated using GitHub Actions to sync the application with a Hugging Face Space.
 

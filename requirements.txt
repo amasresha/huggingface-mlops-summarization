@@ -1,7 +1,7 @@
-torch==2.0.1 
+torch==2.2.0 
 transformers
 gradio
 pytest
 pytest-cov
-numpy
+numpy==1.26.4
 scipy
