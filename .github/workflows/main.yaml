@@ -1,0 +1,29 @@
+name: Sync to Hugging Face Hub
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # Allows manual triggering from the Actions tab
+
+jobs:
+  sync-to-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Fetches the entire commit history
+
+      - name: Add remote
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}  # Hugging Face token from GitHub Secrets
+        run: |
+          git remote add space https://${{ secrets.HF_USERNAME }}:$HF_TOKEN@huggingface.co/spaces/${{ secrets.HF_USERNAME }}/${{ secrets.HF_SPACE_NAME }}
+
+      - name: Push to Hugging Face Hub
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}  # Hugging Face token from GitHub Secrets
+        run: |
+          git fetch space
+          git push --force space HEAD:main

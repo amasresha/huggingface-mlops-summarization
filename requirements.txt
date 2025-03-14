@@ -1,0 +1,8 @@
+gradio
+transformers
+tensorflow
+tf-keras
+pytest
+numpy
+torch
+scipy
