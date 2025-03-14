@@ -1,7 +1,7 @@
-gradio
+torch==2.0.1 
 transformers
+gradio
 pytest
 pytest-cov
 numpy
-torch
 scipy
